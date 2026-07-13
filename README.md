@@ -73,18 +73,3 @@ conda run -n superaiss6 jupyter nbconvert --to notebook --execute --inplace \
 - **Result:** subject-grouped **AUC 0.976 ± 0.022** (naive 0.986 → leakage negligible). SHAP
   recovers BCAAs (2-oxoisovalerate, isoleucine), hippurate region, N-methylnicotinamide, allantoin.
 - **Honest caveats:** small (42 people); **urine** not serum; diabetic subject boundaries approximate.
-
-## Not shown (and why)
-
-The NHANES↔NMR **fusion** (`../pundata_py/`) is not real evidence, on two counts (both verified
-in code):
-- **"+NMR score" (AUC ≈ 0.91):** NMR is sampled from an MTBLS242 distribution *by label*
-  (`np.where(label==1, disease_dist, healthy_dist)`) → direct **label leakage by construction**
-  (score↔label corr ≈ 0.47 built in). Different cohorts, no shared people.
-- **"+Attention" features:** self-attention weights read off a mostly-constant *fabricated* NMR
-  proxy (≈6 NHANES labs in named slots, rest constant). They correlate ≈0 with diabetes and
-  **lower** AUC (C: +Attention 0.808 < A: NHANES-only 0.817) — no information added.
-
-The only honest salvage of the attention work is the **within-cohort coupling map on real
-MTBLS242** (lipoproteins = attention hub), as EDA/hypothesis-generation — never a predictor.
-**Experiment C is the honest thing the fusion was reaching for.**
